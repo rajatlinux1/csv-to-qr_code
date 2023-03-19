@@ -6,6 +6,7 @@ import pandas as pd
 import qrcode
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from tqdm import tqdm
 import config
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -33,7 +34,7 @@ def qr_code_genration():
         print(f"\33[91m >> \"{config.CSV_FILE_NAME}\" file put in \"input_files\" directory\33[0m")
         sys.exit()
 
-    for channel_name in df[config.TARGET_COLUMN_NAME]:
+    for channel_name in tqdm(df[config.TARGET_COLUMN_NAME]):
 
 
         qr = qrcode.QRCode(
@@ -42,7 +43,7 @@ def qr_code_genration():
         box_size=10,
         border=4,
         )
-        qr.add_data(f"https://www.youtube.com/{channel_name}/")
+        qr.add_data(f"{channel_name}")
         qr.make(fit=True)
         channel_name = channel_name.replace(" ", "-")
         channel_name = channel_name.replace("/", "-")
@@ -77,7 +78,7 @@ def gen_pdf_sheet(file_name=None):
     left_step = 35
     down_step = 720
 
-    for code in codes:
+    for code in tqdm(codes):
 
         if left_step > 435:
             left_step = 35
